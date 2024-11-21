@@ -11,7 +11,7 @@
             <Button
               severity="secondary"
               raised
-              icon="pi pi-arrow-left"
+              icon="pi pi-home"
               label="Home"
             />
           </RouterLink>
@@ -42,30 +42,94 @@
 
       <Card class="mt-4">
         <template #title>
-          <p class="text-center text-5xl">{{ pokeItem?.name }}</p>
+          <p class="text-center text-5xl mb-5">{{ pokeItem?.name }}</p>
         </template>
         <template #content>
           <div class="flex justify-center items-center">
-            <img
-              class="w-[100%]"
-              :alt="pokeItem?.name"
-              :src="pokeItem?.sprites?.front_default"
-            />
-            <img
-              class="w-[100%]"
-              :alt="pokeItem?.name"
-              :src="pokeItem?.sprites?.back_default"
-            />
-            <img
-              class="w-[100%]"
-              :alt="pokeItem?.name"
-              :src="pokeItem?.sprites?.front_shiny"
-            />
-            <img
-              class="w-[100%]"
-              :alt="pokeItem?.name"
-              :src="pokeItem?.sprites?.back_shiny"
-            />
+            <div class="w-[40%] h-[20rem] flex justify-center items-center">
+              <UseImage
+                class="h-full"
+                :alt="'front_default'"
+                :src="handleImg(pokeItem, 'front_default')"
+              >
+                <template #loading>
+                  <div
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full loading gradient"
+                  ></div>
+                </template>
+
+                <template #error>
+                  <p
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full"
+                  >
+                    Failed
+                  </p>  
+                </template>
+              </UseImage>
+            </div>
+            <div class="w-[40%] h-[20rem] flex justify-center items-center">
+              <UseImage
+                class="h-full"
+                :alt="'back_default'"
+                :src="handleImg(pokeItem, 'back_default')"
+              >
+                <template #loading>
+                  <div
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full loading gradient"
+                  ></div>
+                </template>
+
+                <template #error>
+                  <p
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full"
+                  >
+                    Failed
+                  </p>
+                </template>
+              </UseImage>
+            </div>
+            <div class="w-[40%] h-[20rem] flex justify-center items-center">
+              <UseImage
+                class="h-full"
+                :alt="'front_shiny'"
+                :src="handleImg(pokeItem, 'front_shiny')"
+              >
+                <template #loading>
+                  <div
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full loading gradient"
+                  ></div>
+                </template>
+
+                <template #error>
+                  <p
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full"
+                  >
+                    Failed
+                  </p>
+                </template>
+              </UseImage>
+            </div>
+            <div class="w-[40%] h-[20rem] flex justify-center items-center">
+              <UseImage
+                class="h-full"
+                :alt="'back_shiny'"
+                :src="handleImg(pokeItem, 'back_shiny')"
+              >
+                <template #loading>
+                  <div
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full loading gradient"
+                  ></div>
+                </template>
+
+                <template #error>
+                  <p
+                    class="text-3xl font-semibold flex justify-center items-center w-full h-full"
+                  >
+                    Failed
+                  </p>
+                </template>
+              </UseImage>
+            </div>
           </div>
         </template>
       </Card>
@@ -75,6 +139,7 @@
 </template>
 
 <script setup lang="ts">
+import { UseImage } from "@vueuse/components";
 import Card from "primevue/card";
 import Button from "primevue/button";
 import { ref, onMounted } from "vue";
@@ -92,12 +157,17 @@ const getDetail = async (minus: boolean) => {
   if (minus == false) pokeId.value++;
   let idFetch = pokeId.value;
   if (idFetch == 0) {
-    pokeId.value = 1
+    pokeId.value = 1;
     return;
   }
   const res = await fetch(`${BASE_API_URL}/${idFetch}`);
   const data = await res.json();
   pokeItem.value = data;
+};
+
+const handleImg = (pokeItem, imgName) => {
+  const image = pokeItem?.sprites[imgName] ?? "";
+  return image;
 };
 
 onMounted(() => {
@@ -109,5 +179,54 @@ onMounted(() => {
 <style>
 .p-card {
   background: #bababa !important;
+}
+
+.loading {
+  width: 80%;
+  height: 90%;
+  border-radius: 10px;
+}
+
+.gradient {
+  background: linear-gradient(270deg, lightgray, darkgrey);
+  background-size: 400% 400%;
+
+  -webkit-animation: AnimationName 2s ease infinite;
+  -moz-animation: AnimationName 2s ease infinite;
+  animation: AnimationName 2s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@-moz-keyframes AnimationName {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes AnimationName {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>
